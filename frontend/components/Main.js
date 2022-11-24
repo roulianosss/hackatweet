@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Tweet from './Tweet'
 import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,6 +12,40 @@ export default function Main() {
     
   const dispatch = useDispatch()  
   const user = useSelector(state => state.user.value)
+
+  const [tweetText, setTweetText] = useState('')
+
+  const [allTweets, setAllTweets] = useState([])
+
+  useEffect(() => {
+    fetchAllTweet()
+  }, [])
+
+
+  const fetchAllTweet = async() =>  {
+    const response = await fetch('http://localhost:3000/tweets/allTweets')
+    const data = await response.json()
+    setAllTweets(data)
+  }
+
+  const handleNewTweet = () => {
+    fetch('http://localhost:3000/tweets/newTweet', {
+			method: 'POST',
+			headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+			body: JSON.stringify({ userId: user.userId, text: tweetText }),
+		}).then(response => response.json())
+			.then(data => {
+                setAllTweets([...allTweets, data])
+			});
+    fetchAllTweet()
+  }
+
+  
+  
+  const tweetsToComponents = allTweets.map(tweet => <Tweet {...tweet} fetchAllTweet={()=> fetchAllTweet()}/>)
+
+  console.log(allTweets)
+
     
   return (
     <div className={styles.globalContainer}>
@@ -31,26 +66,15 @@ export default function Main() {
             <div className={styles.headerContainer}>
                 <h2>Home</h2>
                 <div className={styles.inputBtnContainer}>
-                    <input type="text" />
+                    <input type="text" onChange={(e) => setTweetText(e.target.value)} value={tweetText}/>
                     <div className={styles.counterBtnContainer}>
                         <p>0/180</p>
-                        <div className={styles.tweetBtn}>Tweet</div>
+                        <div className={styles.tweetBtn} onClick={() => handleNewTweet()}>Tweet</div>
                     </div>
                 </div>
             </div>
             <div className={styles.contentContainer}>
-                <div className={styles.tweet}>
-                <div className={styles.tweetHeader}>
-                    <Image className={styles.userImage} width={50} height={50} src='/assets/images/avatar.jpg'/>
-                    <h3>{user.firstname}</h3>
-                    <p>@{user.username} • few seconds ago.</p>
-                </div>
-                <p className={styles.tweetText}>Frist tweet test #twitter</p>
-                <div className={styles.btnsContainer}>
-                    <FontAwesomeIcon icon={faHeart} className={styles.tweetIcons} />
-                    <FontAwesomeIcon icon={faTrash} className={styles.tweetIcons} />
-                </div>
-                </div>
+                {tweetsToComponents}
 
             </div>
         </div>
