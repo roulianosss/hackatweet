@@ -15,7 +15,8 @@ var hashtagsRouter = require("./routes/hashtags");
 
 //
 var app = express();
-//
+
+const cors = require("cors");
 app.use(cors());
 
 app.use(logger("dev"));
