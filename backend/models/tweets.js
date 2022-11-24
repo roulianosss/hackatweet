@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const tweetSchema = mongoose.Schema({
   tweeto: String,
   owner: String,
-  likeCount: Number,
+  likesCounter: Number,
   isDeleted: Boolean,
   inHashtag: String,
 });

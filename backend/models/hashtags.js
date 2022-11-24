@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const hashtagSchema = mongoose.Schema({
+  hashtagText: String,
   tweetsCount: Number,
 });
 
