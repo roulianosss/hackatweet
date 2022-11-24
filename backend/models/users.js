@@ -6,7 +6,8 @@ const userSchema = mongoose.Schema({
   username: String,
   password: String,
   token: String,
-  isConnected: Boolean
+  isConnected: Boolean,
+  likedTweets: [{ type: mongoose.Schema.Types.ObjectId, ref: "tweets" }]
 });
 
 const User = mongoose.model("users", userSchema);

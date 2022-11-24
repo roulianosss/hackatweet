@@ -6,6 +6,16 @@ const User = require('../models/users')
 const { checkBody } = require('../modules/checkBody');
 require("../models/connection");
 
+router.get('/allUsers', async(req, res) => {
+  const allUsers = await User.find()
+  res.json(allUsers)
+})
+
+router.delete('/deleteAll', async(req, res) => {
+  const deleteAll = await User.deleteMany({})
+  res.json(deleteAll)
+})
+
 /* GET users listing. */
 router.post('/signup', (req, res) => {
   if (!checkBody(req.body, ['username', 'password'])) {
@@ -25,7 +35,8 @@ router.post('/signup', (req, res) => {
         username: req.body.username,
         password: hash,
         token: token,
-        isConnected: true
+        isConnected: true,
+        likedTweet: []
       });
       newUser.save().then((data) => res.json(data));
     } else {
