@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 const tweetSchema = mongoose.Schema({
   tweeto: String,
   owner: String,
+  creationTime: Date,
   likesCounter: Number,
   isDeleted: Boolean,
-  inHashtag: String,
+  inHashtagList: String,
 });
 
 const Tweet = mongoose.model("tweets", tweetSchema);
