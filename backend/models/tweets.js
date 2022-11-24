@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const tweetSchema = mongoose.Schema({
   tweeto: String,
-  owner: String,
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
   creationTime: Date,
   likesCounter: Number,
   isDeleted: Boolean,
-  inHashtagList: String,
+  inHashtagList: [{ type: mongoose.Schema.Types.ObjectId, ref: "hashtags" }],
 });
 
 const Tweet = mongoose.model("tweets", tweetSchema);
