@@ -4,21 +4,27 @@ import styles from '../styles/Main.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useSelector, useDispatch } from 'react-redux'
+import { logout } from '../reducers/user'
 
 export default function Main() {
+    
+  const dispatch = useDispatch()  
+  const user = useSelector(state => state.user.value)
+    
   return (
     <div className={styles.globalContainer}>
         <div className={styles.leftContainer}>
             <FontAwesomeIcon icon={faTwitter} className={styles.twitterIcon} />
             <div className={styles.cardUserContainer}>
             <div className={styles.userContainer}>
-                <Image className={styles.userImage} width={50} height={50}  src='/assets/images/avatar.jpg'/>
+                <Image className={styles.userImage} width={50} height={50} src='/assets/images/avatar.jpg'/>
                 <div className={styles.textContainer}>
-                    <h3>John</h3>
-                    <p>@JohnCena</p>
+                    <h3>{user.firstname}</h3>
+                    <p>@{user.username}</p>
                 </div>
             </div>
-            <div className={styles.logOutBtn}>LogOut</div>
+            <div className={styles.logOutBtn} onClick={() => dispatch(logout())}>LogOut</div>
             </div>
         </div>
         <div className={styles.centerContainer}>
@@ -36,8 +42,8 @@ export default function Main() {
                 <div className={styles.tweet}>
                 <div className={styles.tweetHeader}>
                     <Image className={styles.userImage} width={50} height={50} src='/assets/images/avatar.jpg'/>
-                    <h3>John</h3>
-                    <p>@JohnCena • few seconds ago.</p>
+                    <h3>{user.firstname}</h3>
+                    <p>@{user.username} • few seconds ago.</p>
                 </div>
                 <p className={styles.tweetText}>Frist tweet test #twitter</p>
                 <div className={styles.btnsContainer}>
