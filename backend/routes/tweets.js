@@ -6,9 +6,13 @@ const Hashtag = require('../models/hashtags')
 const { checkBody } = require('../modules/checkBody');
 require("../models/connection");
 
-router.delete('/allHashtag', async(req, res)=> {
+router.delete('/allHashtags', async(req, res)=> {
   const deleteAll = await Hashtag.deleteMany({})
   res.json(deleteAll)
+})
+router.get('/allHashtags', async(req, res)=> {
+  const allHashtag = await Hashtag.find()
+  res.json(allHashtag)
 })
 
 router.delete('/allTweets', async(req, res)=> {
@@ -21,28 +25,31 @@ router.get('/allTweets', function(req, res, next) {
 });
 
 router.post('/newTweet', (req, res) => {
-  const hashtags = req.body.text.match(/#[a-z0-9_]+/)
+  const hashtags = [...req.body.text.matchAll(/#[a-z0-9_]+/g)]
   const arrOfIdHashtag = []
-  hashtags.map(async hashtag => {
-    const isExist = await Hashtag.findOne({hashTagName: hashtag})
+  let arrItemCount = hashtags.length
+  hashtags.length && hashtags.map(async hashtag => {
+    const isExist = await Hashtag.findOne({hashTagName: hashtag[0]})
     if (!isExist){
       const newHashtag = new Hashtag({
-        hashTagName: hashtag,
-        hashTagTweetsCount: 0
+        hashTagName: hashtag[0],
+        hashTagTweetsCount: 1
       })
       newHashtag.save().then(data => {
         arrOfIdHashtag.push(data._id.toString())
-        addTweet()
-        console.log(arrOfIdHashtag)
+        arrItemCount--
+        arrItemCount === 0 && addTweet()
       });
     } else {
-        arrOfIdHashtag.push(isExist._id.toString())
-        Hashtag.findByIdAndUpdate(isExist._id, {hashTagTweetsCount: isExist.hashTagTweetsCount + 1})
-        addTweet()
+      await Hashtag.findOneAndUpdate({ hashTagName: hashtag[0] }, { $inc : { hashTagTweetsCount: 1 }})
+      arrOfIdHashtag.push(isExist._id.toString())
+      arrItemCount--
+      arrItemCount === 0 && addTweet()
       }
     })
-    console.log(arrOfIdHashtag);
+    !hashtags.length && addTweet()
     function addTweet(){
+      console.log(arrOfIdHashtag)
       const newTweet = new Tweet({
         text: req.body.text,
         user: req.body.userId,
@@ -53,19 +60,24 @@ router.post('/newTweet', (req, res) => {
       });
       newTweet.save().then((data) => res.json(data));
     }
-
+  
 })
 
-router.delete('/deleteTweet/:tweetId', (req, res) => {
-    Tweet.deleteOne({ _id: req.params.tweetId}).then(data => res.json(data))
+router.delete('/deleteTweet/:tweetId', async(req, res) => {
+    const deletedTweet = await Tweet.findByIdAndDelete(req.params.tweetId)
+    deletedTweet.inHashtagList.map(async hashtag => {
+      const updatedHashtag = await Hashtag.findByIdAndUpdate(hashtag.toString(), { $inc : { hashTagTweetsCount: -1 }})
+      console.log(updatedHashtag)
+    })
+    
+    res.json('deleted')
 })
 
 router.post('/like', async(req, res)=>{
-  const testArray = []
-   const likedTweet = await Tweet.findByIdAndUpdate(req.body.tweetId, {likesCounter: req.body.likes + 1})
-   const user = await User.findByIdAndUpdate(req.body.userId, {$push: { likedTweets: likedTweet._id }},{
+  console.log(req.body.userId)
+   const likedTweet = await Tweet.findByIdAndUpdate(req.body.tweetId, { $inc : { likesCounter: 1 }})
+   const user = await User.findByIdAndUpdate(req.body.userId, {$push: { likedTweets: likedTweet._id.toString() }},{
     new: true})
-    console.log(req.body.userId)
    res.json(user)
 })
 

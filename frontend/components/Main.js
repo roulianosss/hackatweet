@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'
+import Hashtag from './Hashtag';
 import { logout } from '../reducers/user'
 
 export default function Main() {
@@ -16,9 +17,11 @@ export default function Main() {
   const [tweetText, setTweetText] = useState('')
 
   const [allTweets, setAllTweets] = useState([])
+  const [allHashtags, setAllHashtags] = useState([])
 
   useEffect(() => {
     fetchAllTweet()
+    fetchAllHashtags()
   }, [])
 
 
@@ -26,6 +29,12 @@ export default function Main() {
     const response = await fetch('http://localhost:3000/tweets/allTweets')
     const data = await response.json()
     setAllTweets(data)
+  }
+
+  const fetchAllHashtags = async() =>  {
+    const response = await fetch('http://localhost:3000/tweets/allHashtags')
+    const data = await response.json()
+    setAllHashtags(data)
   }
 
   const handleNewTweet = () => {
@@ -36,15 +45,14 @@ export default function Main() {
 		}).then(response => response.json())
 			.then(data => {
                 setAllTweets([...allTweets, data])
+                fetchAllTweet()
+                fetchAllHashtags()
 			});
-    fetchAllTweet()
   }
-
   
-  
-  const tweetsToComponents = allTweets.map(tweet => <Tweet {...tweet} fetchAllTweet={()=> fetchAllTweet()}/>)
+  const tweetsToComponents = allTweets.map(tweet => <Tweet {...tweet} fetchAllHashtag = {()=> fetchAllHashtags()} fetchAllTweet={()=> fetchAllTweet()}/>)
 
-  console.log(allTweets)
+  const hashtagsToComponents = allHashtags.map(hashtag => <Hashtag {...hashtag}/>)
 
     
   return (
@@ -66,9 +74,9 @@ export default function Main() {
             <div className={styles.headerContainer}>
                 <h2>Home</h2>
                 <div className={styles.inputBtnContainer}>
-                    <input type="text" onChange={(e) => setTweetText(e.target.value)} value={tweetText}/>
+                    <textarea type="text" onChange={(e) => setTweetText(e.target.value)} value={tweetText} maxlength="180"/>
                     <div className={styles.counterBtnContainer}>
-                        <p>0/180</p>
+                        <p>{tweetText.length}/180</p>
                         <div className={styles.tweetBtn} onClick={() => handleNewTweet()}>Tweet</div>
                     </div>
                 </div>
@@ -81,18 +89,7 @@ export default function Main() {
         <div className={styles.rightContainer}>
             <h3>Trends</h3>
             <div className={styles.trendsContainer}>
-                <div className={styles.hashtagContainer}>
-                    <h4>#test</h4>
-                    <p>2 tweet</p>
-                </div>
-                <div className={styles.hashtagContainer}>
-                    <h4>#test2</h4>
-                    <p>4 tweet</p>
-                </div>
-                <div className={styles.hashtagContainer}>
-                    <h4>#test3</h4>
-                    <p>5 tweet</p>
-                </div>
+                {hashtagsToComponents}
             </div>
         </div>
     </div>

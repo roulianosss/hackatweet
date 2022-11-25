@@ -66,6 +66,7 @@
     border-right: #3a414c 2px solid;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 .headerContainer {
@@ -84,9 +85,11 @@
     align-items: center;
 }
 
-.headerContainer input{
-    padding: 15px 0;
+.headerContainer textarea{
+    font-size: 1.5em;
+    padding: 5px 5px;
     width: 80%;
+    resize: none;
 }
 
 .counterBtnContainer {
@@ -173,6 +176,18 @@
 .hashtagContainer {
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
 }
 
+.hashtagContainer h4{
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 5px;
+    padding: 0;
+}
 
+.hashtagContainer p{
+    margin: 5px;
+    padding: 0;
+}

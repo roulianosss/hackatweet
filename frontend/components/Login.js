@@ -3,10 +3,10 @@ import styles from '../styles/Login.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { login } from '../reducers/user'
 
-// const user = useSelector(state => state.user.value)
+
 
 
 export default function Login() {
@@ -45,7 +45,7 @@ export default function Login() {
 			.then(data => {
 				console.log(data)
         if (data.token) {
-					dispatch(login({ username: data.username, token: data.token, firstname: data.firstname, userId: data._id }));
+					dispatch(login({ username: data.username, token: data.token, firstname: data.firstname, userId: data._id, likedTweets: data.likedTweets}));
 					setSignUpUsername('');
 					setSignUpPassword('');
           setSignUpFirstname('')
@@ -65,7 +65,7 @@ export default function Login() {
 		}).then(response => response.json())
 			.then(data => {
         if (data.token) {
-					dispatch(login({ username: data.username, token: data.token, firstname: data.firstname, userId: data._id }));
+					dispatch(login({ username: data.username, token: data.token, firstname: data.firstname, userId: data._id, likedTweets: data.likedTweets }));
 					setSignInUsername('')
 					setSignInPassword('')
           setInfoConnection('')
