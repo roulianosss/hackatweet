@@ -21,7 +21,7 @@ router.delete('/allTweets', async(req, res)=> {
 })
 /* GET home page. */
 router.get('/allTweets', function(req, res, next) {
-  Tweet.find().populate('user').then(data => res.json(data))
+  Tweet.find().populate('user').populate('inHashtagList').then(data => res.json(data))
 });
 
 router.post('/newTweet', (req, res) => {
@@ -69,7 +69,6 @@ router.delete('/deleteTweet/:tweetId', async(req, res) => {
       const updatedHashtag = await Hashtag.findByIdAndUpdate(hashtag.toString(), { $inc : { hashTagTweetsCount: -1 }})
       console.log(updatedHashtag)
     })
-    
     res.json('deleted')
 })
 
@@ -80,5 +79,15 @@ router.post('/like', async(req, res)=>{
     new: true})
    res.json(user)
 })
+
+router.post('/unlike', async(req, res)=>{
+  console.log(req.body.userId)
+   const likedTweet = await Tweet.findByIdAndUpdate(req.body.tweetId, { $inc : { likesCounter: -1 }})
+   const user = await User.findByIdAndUpdate(req.body.userId, {$pull: { likedTweets: likedTweet._id.toString() }},{
+    new: true})
+   res.json(user)
+})
+
+
 
 module.exports = router;

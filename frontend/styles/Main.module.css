@@ -66,7 +66,7 @@
     border-right: #3a414c 2px solid;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+   
 }
 
 .headerContainer {
@@ -114,6 +114,7 @@
 .contentContainer {
     height: 80vh;
     border-top: #3a414c 2px solid;
+    overflow-y: auto;
 }
 
 .tweet {
