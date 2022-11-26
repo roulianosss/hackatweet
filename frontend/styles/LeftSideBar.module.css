@@ -1,0 +1,58 @@
+.leftContainer {
+    width: 20vw;
+    height: 100vh;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: #3a414c 2px solid;
+}
+
+.twitterIcon {
+    width: 50px;
+    height: 50px;
+    transform: rotate(180deg);
+}
+
+.cardUserContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.userContainer {
+    display: flex;
+    align-items: center;
+    margin:0;
+    padding: 0;
+}
+
+.logOutBtn {
+    padding: 5px 10px;
+    border: 2px solid white;
+    text-align: center;
+    border-radius: 25px;
+    width: 40%;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.textContainer h3 {
+    margin: 0;
+    padding: 0;
+}
+
+.textContainer p {
+    margin: 0;
+    padding: 0;
+}
+
+.userImage {
+    border-radius: 50%;
+    margin-right: 15px;
+}

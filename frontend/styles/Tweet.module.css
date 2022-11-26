@@ -1,0 +1,41 @@
+
+.tweet {
+    border-bottom: #3a414c 2px solid;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 15px 0;
+}
+
+.tweetHeader {
+    padding: 0 15px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.userImage {
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.tweetHeader h3 {
+    padding-right: 5px;
+}
+
+.tweetText {
+    margin: 0 0 5px 0;
+    padding: 5px 15px;
+    font-size: 25px;
+}
+
+.btnsContainer {
+    padding: 0 15px;
+    display: flex;
+}
+
+.tweetIcons {
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+}

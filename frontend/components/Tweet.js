@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import reactStringReplace from 'react-string-replace'
-import styles from '../styles/Main.module.css'
+import styles from '../styles/Tweet.module.css'
 import timeSince  from '../modules/timeSince'
 import { login } from '../reducers/user'
 import { useSelector, useDispatch } from 'react-redux'
@@ -50,7 +50,7 @@ export default function Tweet(props) {
     hashtags.map(hashtag => {
         const [ hashtagName ] = hashtag
         tweetContent = reactStringReplace(tweetContent, hashtagName, (match, i) => (
-        <span onClick={()=>props.fetchByHashtag(hashtagName)} style={{color: '#3690ee'}}>{match}</span>
+        <span onClick={()=>props.fetchByHashtag(hashtagName)} style={{color: '#3690ee', cursor: 'pointer'}}>{match}</span>
         ))
     })
 

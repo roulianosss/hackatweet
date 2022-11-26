@@ -1,0 +1,15 @@
+
+.rightContainer {
+    padding: 15px;
+    width: 30vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.trendsContainer {
+    background-color: #1c232d;
+    padding: 25px;
+    border-radius: 20px;
+}
+

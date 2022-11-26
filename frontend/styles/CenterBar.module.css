@@ -1,0 +1,54 @@
+
+.centerContainer {
+    width: 50vw;
+    border-right: #3a414c 2px solid;
+    display: flex;
+    flex-direction: column;
+   
+}
+
+.headerContainer {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.inputBtnContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.headerContainer textarea{
+    font-size: 1.5em;
+    padding: 15px 15px;
+    width: 80%;
+    resize: none;
+    border-radius: 20px;
+}
+
+.counterBtnContainer {
+    width: 80%;
+    display: flex;
+    justify-content: flex-end;
+    margin: 15px 0;
+}
+
+.tweetBtn {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    padding: 10px 50px;
+    margin: 0 10px 0 40px;
+    background-color: #3690ee;
+    text-align: center;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.contentContainer {
+    height: 80vh;
+    border-top: #3a414c 2px solid;
+    overflow-y: auto;
+}

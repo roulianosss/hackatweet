@@ -109,10 +109,10 @@ export default function Login() {
         <div className={styles.textContainer}>
             <FontAwesomeIcon icon={faTwitter} className={styles.twitterIcon} />
             <h2>See what's <br/>happening</h2>
-            <h4>Join Hackatweet today</h4>
+            <h4>Join Hackatweet today.</h4>
             <div className={styles.signUpBtn} onClick={() => handleSignUpModal()}>Sign up</div>
             <p>Already have an account?</p>
-            <div className={styles.signUpBtn} onClick={() => handleSignInModal()}>Sign in</div>
+            <div className={styles.signInBtn} onClick={() => handleSignInModal()}>Sign in</div>
         </div>
     </div>
   )

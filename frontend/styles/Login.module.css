@@ -11,8 +11,8 @@
     left: 50%;
     transform: translateX(-50%);
     margin-top: 60px;
-    width: 550px;
-    height: 550px;
+    width: 30vw;
+    height: 60vh;
     background-color: #161d28;
     display: flex;
     flex-direction: column;
@@ -20,13 +20,16 @@
     justify-content: space-between;
     padding: 50px 25px;
     z-index: 10;
+    font-size: 1.5em;
+    border-radius: 15px;
 }
 
 .modalContainer input {
     padding: 10px 50px;
+    margin: 15px 0;
     border-radius: 25px;
     border: 1px solid #bababa;
-    font-size: 1em;
+    font-size: 1.2em;
 }
 
 .modalContainer .closeIcon {
@@ -48,6 +51,7 @@
     text-align: center;
     border-radius: 25px;
     cursor: pointer;
+    margin-top: 35px;
 }
 
 
@@ -65,42 +69,60 @@
 }
 
 .textContainer h2{
-    font-size: 5em;
+    font-size: 8em;
     font-weight: bolder;
     margin: 40px 0 0 0;
 }
 
 .textContainer h4{
-    font-size: 2em;
+    font-size: 3.5em;
     font-weight: bold;
 }
 
 .textContainer p {
     font-size: 17px;
     font-weight: 500;
+    margin: 35px 25px;
+
 }
 
 .twitterIcon {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     transform: rotate(180deg);
 }
 
 .signUpBtn {
+    font-size: 1.5em;
     font-weight: bold;
-    padding: 10px 50px;
+    padding: 15px 50px;
     background-color: #3690ee;
-    width: 200px;
+    width: 250px;
     text-align: center;
-    border-radius: 25px;
+    border-radius: 35px;
     cursor: pointer;
 }
 
+.signUpBtn:hover{
+    background-color: #5da4f0;
+}
+
 .signInBtn {
+    font-size: 1.5em;
+    width: 250px;
+    border-radius: 35px;
     font-weight: bold;
-    padding: 10px 50px;
+    padding: 15px 50px;
     text-align: center;
     cursor: pointer;
+    color: #3690ee;
+    background-color: #161d28;
+    border: 1px solid #3690ee;
+    
+}
+
+.signInBtn:hover {
+    background-color: #2a3546;
 }
 
 .infoConnection {
