@@ -25,7 +25,6 @@ router.post('/newTweet', (req, res) => {
   isHashtags && detectedHashtags.map(async hashtagObj => {
     const [name] = hashtagObj
     const hashtag = await Hashtag.findOne({hashtagName: name})
-    console.log(hashtag)
     if (!hashtag){
       const newHashtag = new Hashtag({
         hashtagName: name,
@@ -73,16 +72,16 @@ router.delete('/deleteTweet/:tweetId', async(req, res) => {
 router.post('/like', async(req, res)=>{
   const { tweetId, userId } = req.body
   const likedTweet = await Tweet.findByIdAndUpdate(tweetId, { $inc : { likesCounter: 1 }})
-  await User.findByIdAndUpdate(userId, {$push: { likedTweets: likedTweet._id.toString() }})
-  res.json(likedTweet)
+  const user = await User.findByIdAndUpdate(userId, {$push: { likedTweets: likedTweet._id.toString() }}, { new: true })
+  res.json(user)
 })
 
 // fetch un unlike
-router.post('/like', async(req, res)=>{
+router.post('/unlike', async(req, res)=>{
   const { tweetId, userId } = req.body
   const likedTweet = await Tweet.findByIdAndUpdate(tweetId, { $inc : { likesCounter: -1 }})
-  const user = await User.findByIdAndUpdate(userId, {$pull: { likedTweets: likedTweet._id.toString() }})
-  res.json(likedTweet)
+  const user = await User.findByIdAndUpdate(userId, {$pull: { likedTweets: likedTweet._id.toString() }}, { new: true })
+  res.json(user)
 })
 
 // fetch une suppression de tout les tweets
