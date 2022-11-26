@@ -35,24 +35,22 @@ export default function Login() {
     setSignInModal(true)
   }
 
-
   const handleSignUp = () => {
     fetch('http://localhost:3000/users/signup', {
 			method: 'POST',
 			headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
 			body: JSON.stringify({ username: signUpUsername, password: signUpPassword, firstname: signUpFirstname }),
 		}).then(response => response.json())
-			.then(data => {
-				console.log(data)
-        if (data.token) {
-					dispatch(login({ username: data.username, token: data.token, firstname: data.firstname, userId: data._id, likedTweets: data.likedTweets}));
+			.then(user => {
+        if (user.token) {
+					dispatch(login({ username: user.username, token: user.token, firstname: user.firstname, userId: user._id, likedTweets: user.likedTweets}));
 					setSignUpUsername('');
 					setSignUpPassword('');
           setSignUpFirstname('')
           setInfoConnection('')
 					setSignUpModal(false)
-				} else if (!data.result) {
-          setInfoConnection(data.error)
+				} else if (!user.result) {
+          setInfoConnection(user.error)
         }
 			});
   }
@@ -85,7 +83,7 @@ export default function Login() {
         <input type="text" placeholder='Username' onChange={(e) => setSignUpUsername(e.target.value)} value={signUpUsername}/>
         <input type="password" placeholder='Password' onChange={(e) => setSignUpPassword(e.target.value)} value={signUpPassword}/>
         <div className={styles.signUpModalBtn} onClick={() => handleSignUp()}>Sign up</div>
-        <p style={{color: 'red'}}>{infoConnection}</p>
+        <p className={styles.infoConnection}>{infoConnection}</p>
     </div>
   )
 
@@ -97,7 +95,7 @@ export default function Login() {
         <input type="text" placeholder='Username' onChange={(e) => setSignInUsername(e.target.value)} value={signInUsername} />
         <input type="password" placeholder='Password' onChange={(e) => setSignInPassword(e.target.value)} value={signInPassword}/>
         <div className={styles.signUpModalBtn} onClick={() => handleSignIn()}>Sign In</div>
-        <p style={{color: 'red'}}>{infoConnection}</p>
+        <p className={styles.infoConnection}>{infoConnection}</p>
     </div>
   )
 
@@ -115,7 +113,6 @@ export default function Login() {
             <div className={styles.signUpBtn} onClick={() => handleSignUpModal()}>Sign up</div>
             <p>Already have an account?</p>
             <div className={styles.signUpBtn} onClick={() => handleSignInModal()}>Sign in</div>
-				
         </div>
     </div>
   )

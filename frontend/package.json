@@ -20,6 +20,7 @@
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "react-string-replace": "^1.1.0",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "uuid": "^9.0.0"
   }
 }
