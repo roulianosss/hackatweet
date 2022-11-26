@@ -1,39 +1,17 @@
-var express = require("express");
-var router = express.Router();
-//
-const Hashtag = require("../models/hashtags");
-const Tweet = require("../models/tweets");
+const express = require("express");
+const router = express.Router();
+const Hashtag = require('../models/hashtags')
 
-router.post("/", (req, res) => {
-  // Check if the Hastag has not already been created
-  Hashtag.findOne({
-    hashTagName: { $regex: new RegExp(req.body.hashTagName, "i") },
-  }).then((dbData) => {
-    if (dbData === null) {
-      // Creates new hashtag with attributes
-      const newHashTag = new HashTag({
-        hashTagName: req.body.hashTagName,
-        hashTagTweetsCount: "0",
-      });
+// fetch tout les hashtags
+router.get('/allHashtags', async(req, res)=> {
+  const allHashtag = await Hashtag.find()
+  res.json(allHashtag)
+})
 
-      // Finally save in database
-      newHashTag.save().then(() => {
-        HashTag.find().then((data) => {
-          console.log(data);
-        });
-      });
-
-      // ADD TWEET TO HASHTAG
-    } else {
-      // ADD TWEET TO HASHTAG
-    }
-  });
-});
-
-//
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
-});
+// fetch la suppression de tout les hashtags
+router.delete('/allHashtags', async(req, res)=> {
+  const deletedHashtags = await Hashtag.deleteMany({})
+  res.json(deletedHashtags)
+})
 
 module.exports = router;

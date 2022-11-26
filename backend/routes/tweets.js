@@ -6,88 +6,89 @@ const Hashtag = require('../models/hashtags')
 const { checkBody } = require('../modules/checkBody');
 require("../models/connection");
 
-router.delete('/allHashtags', async(req, res)=> {
-  const deleteAll = await Hashtag.deleteMany({})
-  res.json(deleteAll)
-})
-router.get('/allHashtags', async(req, res)=> {
-  const allHashtag = await Hashtag.find()
-  res.json(allHashtag)
+//fetch tout les tweets
+router.get('/allTweets', (req, res) => {
+  Tweet.find().populate('author').populate('hashtags').then(allTweets => res.json(allTweets))
 })
 
-router.delete('/allTweets', async(req, res)=> {
-  const deleteAll = await Tweet.deleteMany({})
-  res.json(deleteAll)
-})
-/* GET home page. */
-router.get('/allTweets', function(req, res, next) {
-  Tweet.find().populate('user').populate('inHashtagList').then(data => res.json(data))
-});
-
+// fetch un nouveau tweet avec gestion des nouveau hashtags
 router.post('/newTweet', (req, res) => {
-  const hashtags = [...req.body.text.matchAll(/#[a-z0-9_]+/g)]
-  const arrOfIdHashtag = []
-  let arrItemCount = hashtags.length
-  hashtags.length && hashtags.map(async hashtag => {
-    const isExist = await Hashtag.findOne({hashTagName: hashtag[0]})
-    if (!isExist){
+  if (!checkBody(req.body, ['userId', 'tweetContent'])) {
+    res.json({ result: false, error: 'Missing or empty fields' });
+    return;
+  }
+  const { userId, tweetContent } = req.body
+  const detectedHashtags = [...tweetContent.matchAll(/#[a-z0-9_]+/g)]
+  const isHashtags = detectedHashtags.length > 0 ? true : false
+  const tweetsIds = []
+  let hashtagsCounter = detectedHashtags.length // compteur pour gerer l asynchrone
+  isHashtags && detectedHashtags.map(async hashtagObj => {
+    const [name] = hashtagObj
+    const hashtag = await Hashtag.findOne({hashtagName: name})
+    console.log(hashtag)
+    if (!hashtag){
       const newHashtag = new Hashtag({
-        hashTagName: hashtag[0],
-        hashTagTweetsCount: 1
+        hashtagName: name,
+        hashtagInTweetsCount: 1
       })
-      newHashtag.save().then(data => {
-        arrOfIdHashtag.push(data._id.toString())
-        arrItemCount--
-        arrItemCount === 0 && addTweet()
-      });
+      newHashtag.save().then(newHashtag => {
+        tweetsIds.push(String(newHashtag._id))
+        hashtagsCounter--
+        !hashtagsCounter && addTweet()
+      })
     } else {
-      await Hashtag.findOneAndUpdate({ hashTagName: hashtag[0] }, { $inc : { hashTagTweetsCount: 1 }})
-      arrOfIdHashtag.push(isExist._id.toString())
-      arrItemCount--
-      arrItemCount === 0 && addTweet()
+      await Hashtag.findOneAndUpdate(
+        { hashtagName: name },
+        { $inc : { hashtagInTweetsCount: 1 } }
+      )
+      tweetsIds.push(String(hashtag._id))
+      hashtagsCounter--
+      !hashtagsCounter && addTweet()
       }
     })
-    !hashtags.length && addTweet()
+    !isHashtags && addTweet()
     function addTweet(){
-      console.log(arrOfIdHashtag)
       const newTweet = new Tweet({
-        text: req.body.text,
-        user: req.body.userId,
-        creationTime: new Date(),
+        tweetContent: tweetContent,
+        author: userId,
+        creationDate: new Date(),
         likesCounter: 0,
-        isDeleted: false,
-        inHashtagList: arrOfIdHashtag
+        hashtags: tweetsIds
       });
-      newTweet.save().then((data) => res.json(data));
+      newTweet.save().then((newTweet) => res.json(newTweet));
     }
-  
 })
 
+// fetch la suppression d'un tweet
 router.delete('/deleteTweet/:tweetId', async(req, res) => {
-    const deletedTweet = await Tweet.findByIdAndDelete(req.params.tweetId)
-    deletedTweet.inHashtagList.map(async hashtag => {
-      const updatedHashtag = await Hashtag.findByIdAndUpdate(hashtag.toString(), { $inc : { hashTagTweetsCount: -1 }})
-      console.log(updatedHashtag)
-    })
-    res.json('deleted')
+  const tweetId = req.params.tweetId
+  const deletedTweet = await Tweet.findByIdAndDelete(tweetId)
+  deletedTweet.hashtags.map(async hashtag => {
+  await Hashtag.findByIdAndUpdate(String(hashtag), { $inc : { hashtagInTweetsCount: -1 }})
+  })
+  res.json(`The tweet with id: ${tweetId} was deleted`)
 })
 
+// fetch un like 
 router.post('/like', async(req, res)=>{
-  console.log(req.body.userId)
-   const likedTweet = await Tweet.findByIdAndUpdate(req.body.tweetId, { $inc : { likesCounter: 1 }})
-   const user = await User.findByIdAndUpdate(req.body.userId, {$push: { likedTweets: likedTweet._id.toString() }},{
-    new: true})
-   res.json(user)
+  const { tweetId, userId } = req.body
+  const likedTweet = await Tweet.findByIdAndUpdate(tweetId, { $inc : { likesCounter: 1 }})
+  await User.findByIdAndUpdate(userId, {$push: { likedTweets: likedTweet._id.toString() }})
+  res.json(likedTweet)
 })
 
-router.post('/unlike', async(req, res)=>{
-  console.log(req.body.userId)
-   const likedTweet = await Tweet.findByIdAndUpdate(req.body.tweetId, { $inc : { likesCounter: -1 }})
-   const user = await User.findByIdAndUpdate(req.body.userId, {$pull: { likedTweets: likedTweet._id.toString() }},{
-    new: true})
-   res.json(user)
+// fetch un unlike
+router.post('/like', async(req, res)=>{
+  const { tweetId, userId } = req.body
+  const likedTweet = await Tweet.findByIdAndUpdate(tweetId, { $inc : { likesCounter: -1 }})
+  const user = await User.findByIdAndUpdate(userId, {$pull: { likedTweets: likedTweet._id.toString() }})
+  res.json(likedTweet)
 })
 
-
+// fetch une suppression de tout les tweets
+router.delete('/allTweets', async(req, res)=> {
+  const deletedTweets = await Tweet.deleteMany({})
+  res.json(deletedTweets)
+})
 
 module.exports = router;
