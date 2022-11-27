@@ -17,6 +17,8 @@
 .userImage {
     border-radius: 50%;
     margin-right: 15px;
+    cursor: pointer;
+    object-fit: cover;
 }
 
 .tweetHeader h3 {

@@ -8,7 +8,7 @@ require("../models/connection");
 
 //fetch tout les tweets
 router.get('/allTweets', (req, res) => {
-  Tweet.find().populate('author').populate('hashtags').then(allTweets => res.json(allTweets))
+  Tweet.find().populate('author').populate('hashtags').lean().exec().then(allTweets => res.json(allTweets))
 })
 
 // fetch un nouveau tweet avec gestion des nouveau hashtags
@@ -54,7 +54,9 @@ router.post('/newTweet', (req, res) => {
         likesCounter: 0,
         hashtags: tweetsIds
       });
-      newTweet.save().then((newTweet) => res.json(newTweet));
+      newTweet.save().then((newTweet) => {
+        Tweet.find(newTweet._id).populate('author').populate('hashtags').lean().exec().then(tweet => res.json(tweet))
+      });
     }
 })
 
@@ -72,7 +74,7 @@ router.delete('/deleteTweet/:tweetId', async(req, res) => {
 router.post('/like', async(req, res)=>{
   const { tweetId, userId } = req.body
   const likedTweet = await Tweet.findByIdAndUpdate(tweetId, { $inc : { likesCounter: 1 }})
-  const user = await User.findByIdAndUpdate(userId, {$push: { likedTweets: likedTweet._id.toString() }}, { new: true })
+  const user = await User.findByIdAndUpdate(userId, {$push: { likedTweets: likedTweet._id.toString() }}, { new: true }).lean().exec()
   res.json(user)
 })
 
@@ -80,7 +82,7 @@ router.post('/like', async(req, res)=>{
 router.post('/unlike', async(req, res)=>{
   const { tweetId, userId } = req.body
   const likedTweet = await Tweet.findByIdAndUpdate(tweetId, { $inc : { likesCounter: -1 }})
-  const user = await User.findByIdAndUpdate(userId, {$pull: { likedTweets: likedTweet._id.toString() }}, { new: true })
+  const user = await User.findByIdAndUpdate(userId, {$pull: { likedTweets: likedTweet._id.toString() }}, { new: true }).lean().exec()
   res.json(user)
 })
 

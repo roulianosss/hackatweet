@@ -8,6 +8,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const tweetsRouter = require("./routes/tweets");
 const hashtagsRouter = require("./routes/hashtags");
+const uploadsRouter = require("./routes/uploads");
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/tweets", tweetsRouter);
 app.use("/hashtags", hashtagsRouter);
+app.use("/uploads", uploadsRouter);
 
 module.exports = app;
