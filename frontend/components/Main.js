@@ -5,12 +5,15 @@ import CenterBar from "./CenterBar";
 import RightSideBar from "./RightSideBar";
 import Hashtag from "./Hashtag";
 import styles from "../styles/Main.module.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { useDispatch } from "react-redux";
+import { login } from "../reducers/user";
 
 export default function Main() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
+  console.log(user);
 
   const [allTweets, setAllTweets] = useState([]);
   const [allHashtags, setAllHashtags] = useState([]);
@@ -22,7 +25,25 @@ export default function Main() {
   const refreshAllData = () => {
     fetchAllTweet();
     fetchAllHashtags();
+    
   };
+
+  const fetchUser = async(userId) => {
+    const response = await fetch(`http://localhost:3000/users/${userId}`);
+    const user = await response.json();
+    dispatch(
+      login({
+        username: user.username,
+        token: user.token,
+        firstname: user.firstname,
+        userId: user._id,
+        tweets: user.tweets,
+        likedTweets: user.likedTweets,
+        avatar: `data:${user.avatar.contentType};base64,${user.avatar.data}`,
+
+      })
+    )
+  }
 
   const fetchAllTweet = async () => {
     const response = await fetch("http://localhost:3000/tweets/allTweets");
@@ -46,6 +67,7 @@ export default function Main() {
   };
 
   const fetchByHashtag = async (hashtagName) => {
+
     const response = await fetch("http://localhost:3000/tweets/allTweets");
     const allTweets = await response.json();
     const tweetsByHashtag = allTweets.filter((tweet) =>
@@ -64,6 +86,7 @@ export default function Main() {
       body: JSON.stringify({ userId: user.userId, tweetContent: tweetContent }),
     });
     refreshAllData();
+    fetchUser(user.userId)
   };
 
   const tweetsToComponents = allTweets

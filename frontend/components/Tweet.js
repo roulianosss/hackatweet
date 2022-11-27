@@ -45,6 +45,7 @@ export default function Tweet(props) {
           userId: data._id,
           likedTweets: data.likedTweets,
           avatar: `data:${data.avatar.contentType};base64,${data.avatar.data}`,
+          tweets: user.tweets,
         })
       );
       props.fetchAllTweet();
@@ -66,13 +67,14 @@ export default function Tweet(props) {
           userId: data._id,
           likedTweets: data.likedTweets,
           avatar: `data:${data.avatar.contentType};base64,${data.avatar.data}`,
+          tweets: user.tweets,
         })
       );
       props.fetchAllTweet();
     }
   };
   let tweetContent = props.tweetContent;
-  const hashtags = [...tweetContent.matchAll(/#[a-z0-9_]+/g)];
+  const hashtags = [...tweetContent.matchAll(/#[a-z0-9_]+/gi)];
   hashtags.map((hashtag) => {
     const [hashtagName] = hashtag;
     tweetContent = reactStringReplace(tweetContent, hashtagName, (match, i) => (

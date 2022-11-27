@@ -46,7 +46,10 @@ export default function UploadAvatar(props) {
                      token: data.token, 
                      firstname: data.firstname, 
                      userId: data._id, likedTweets: data.likedTweets, 
-                     avatar:  `data:${data.avatar.contentType};base64,${data.avatar.data}` }))
+                     avatar:  `data:${data.avatar.contentType};base64,${data.avatar.data}`,
+                     tweets: user.tweets,
+                     likedTweets: user.likedTweets
+                    }))
     props.refreshAllData()
     props.toggleModal()
   }

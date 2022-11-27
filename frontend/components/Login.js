@@ -53,8 +53,10 @@ export default function Login() {
               token: user.token,
               firstname: user.firstname,
               userId: user._id,
+              tweets: user.tweets,
               likedTweets: user.likedTweets,
               avatar: `data:${user.avatar.contentType};base64,${user.avatar.data}`,
+
             })
           );
           setSignUpUsername("");
@@ -89,6 +91,7 @@ export default function Login() {
               token: data.token,
               firstname: data.firstname,
               userId: data._id,
+              tweets: user.tweets,
               likedTweets: data.likedTweets,
               avatar: `data:${data.avatar.contentType};base64,${data.avatar.data}`,
             })
